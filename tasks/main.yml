@@ -1,2 +1,22 @@
 ---
 # tasks file for ansible-role-centrifuge
+
+- name: Ensuring that the software folder already exists
+  file: path={{ ansible_env.PWD }}/software state=directory mode=0777
+
+- name: Extract the downloaded Centrifuge archive
+  unarchive: 
+    src: https://github.com/infphilo/centrifuge/archive/v1.0.3.tar.gz
+    dest: "{{ ansible_env.PWD }}/software"
+    remote_src: yes
+
+- name: Running make
+  command: make
+  args:
+      chdir: "{{ ansible_env.PWD }}/software/centrifuge-1.0.3"
+
+- name: Running make install
+  command: "make install prefix={{ ansible_env.PWD }}/software/centrifuge"
+  args:
+      chdir: "{{ ansible_env.PWD }}/software/centrifuge-1.0.3"
+
